@@ -1,25 +1,40 @@
 {
   "expo": {
-    "name": "KotobaBiyori",
-    "slug": "KotobaBiyori",
-    "version": "1.0.0",
+    "name": "ことば日和",
+    "slug": "kotoba-biyori",
+    "scheme": "kotobabiyori",
+    "version": "1.7.0-beta.1",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon-v2.png",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "package": "com.kotobabiyori.app",
+      "versionCode": 27,
+      "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
+        "backgroundColor": "#F8F7F3",
+        "foregroundImage": "./assets/android-icon-foreground-v2.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": []
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./assets/favicon-v2.png"
+    },
+    "plugins": [
+      "expo-secure-store",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#F8F7F3",
+          "image": "./assets/splash-icon-v2.png",
+          "imageWidth": 220
+        }
+      ],
+      "expo-sharing"
+    ]
   }
 }

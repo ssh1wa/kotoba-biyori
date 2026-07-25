@@ -8,15 +8,22 @@ node_modules/
 dist/
 web-build/
 expo-env.d.ts
+*.log
+
+# Project-local Android toolchain
+.toolchain/
 
 # Native
 .kotlin/
 *.orig.*
 *.jks
+*.keystore
 *.p8
 *.p12
 *.key
 *.mobileprovision
+keystore.properties
+local.properties
 
 # Metro
 .metro-health-check*
@@ -30,8 +37,10 @@ yarn-error.*
 .DS_Store
 *.pem
 
-# local env files
-.env*.local
+# local env files and credentials
+.env
+.env.*
+!.env.example
 
 # typescript
 *.tsbuildinfo
@@ -39,3 +48,11 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# local preview captures
+/docs/screenshots/
+
+# local AI tool configuration
+.claude/
+CLAUDE.md
+AGENTS.md

@@ -1,12 +1,36 @@
 {
   "name": "kotobabiyori",
-  "version": "1.0.0",
+  "version": "1.7.0-beta.1",
+  "description": "Android Japanese learning app with native furigana, LLM translation, practice, and roleplay.",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "homepage": "https://github.com/ssh1wa/kotoba-biyori",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ssh1wa/kotoba-biyori.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ssh1wa/kotoba-biyori/issues"
+  },
   "main": "index.ts",
   "dependencies": {
+    "@expo/metro-runtime": "~57.0.6",
+    "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "~57.0.7",
+    "expo-document-picker": "~57.0.1",
+    "expo-file-system": "~57.0.1",
+    "expo-haptics": "~57.0.1",
+    "expo-secure-store": "~57.0.1",
+    "expo-sharing": "~57.0.6",
+    "expo-splash-screen": "~57.0.4",
     "expo-status-bar": "~57.0.1",
+    "expo-system-ui": "~57.0.1",
+    "lucide-react-native": "^1.25.0",
     "react": "19.2.3",
-    "react-native": "0.86.0"
+    "react-dom": "19.2.3",
+    "react-native": "0.86.0",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-svg": "15.15.4",
+    "react-native-web": "^0.21.2"
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
@@ -14,9 +38,12 @@
   },
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "typecheck": "tsc --noEmit",
+    "prebuild:android": "expo prebuild --platform android",
+    "apk": "cd android && gradlew.bat assembleRelease"
   },
   "private": true
 }
