@@ -3,7 +3,7 @@
 一个面向 Android 的日中双语学习应用。使用用户自己的 LLM API 完成翻译、词典查询、语法拆解、互译练习和日语角色对话，并使用原生布局把假名显示在汉字上方。
 
 <p align="center">
-  <img src="docs/screenshots/home.png" alt="ことば日和应用首页" width="360">
+  <img src="docs/screenshots/furigana-demo.jpg" alt="ことば日和汉字上方注音与互译示范" width="360">
 </p>
 
 当前处于公开测试阶段。模型生成内容可能存在错误，重要知识点请结合可靠资料核对。
