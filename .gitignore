@@ -49,9 +49,6 @@ yarn-error.*
 /ios
 /android
 
-# local preview captures
-/docs/screenshots/
-
 # local AI tool configuration
 .claude/
 CLAUDE.md
