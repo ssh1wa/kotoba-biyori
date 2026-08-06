@@ -541,7 +541,7 @@ export function SettingsModal({
               <View style={styles.rule} />
               <View style={styles.backupHeading}>
                 <Text style={styles.sectionTitle}>关于</Text>
-                <Text style={styles.modelHint}>v1.7.0-beta.1</Text>
+                <Text style={styles.modelHint}>v1.7.0-beta.2</Text>
               </View>
               <Pressable accessibilityRole="link" onPress={() => Linking.openURL('https://github.com/ssh1wa/kotoba-biyori')} style={styles.attribution}>
                 <Text style={styles.attributionText}>GitHub 项目主页与下载</Text>

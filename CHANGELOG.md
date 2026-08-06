@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.7.0-beta.2 - 2026-08-07
+
+### Changed
+
+- Replaced translation suggestions with the five most recent queries.
+- Recent query rows now reopen the complete saved translation, dictionary,
+  grammar breakdown, and follow-up conversation.
+
 ## 1.7.0-beta.1 - 2026-07-26
 
 First public beta release.

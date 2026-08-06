@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as Haptics from 'expo-haptics';
-import { ArrowDownUp, BookOpen, Clock3, RefreshCw, Send } from 'lucide-react-native';
+import { ArrowDownUp, BookOpen, ChevronRight, Clock3, Send } from 'lucide-react-native';
 import {
   Animated,
   KeyboardAvoidingView,
@@ -22,13 +22,6 @@ import { translationSystemPrompt, tutorFollowUpPrompt } from '../lib/prompts';
 import { AppColors, radii, useThemedStyles } from '../theme';
 import { AppSettings, TranslationResult, TutorFollowUpReply, TutorFollowUpTurn } from '../types';
 
-const exampleBatches = [
-  ['我明天想和朋友去看电影。', '駅に着いたら、連絡してください。'],
-  ['这家店的咖啡很好喝。', '週末は家でゆっくり過ごしました。'],
-  ['如果明天下雨，我就不出门了。', '日本語を勉強し始めて半年になります。'],
-  ['请告诉我去车站怎么走。', 'この料理は思ったより辛くありません。'],
-];
-
 export function TranslateScreen({ settings, records, restoreRecord, seedText, seedId, seedResult, seedAutoSubmit, onSeedConsumed, onNeedSettings, onActivity, onUpdateRecord, onOpenRecord, onDeleteRecord, onRecordRestored }: { settings: AppSettings; records: ActivityRecord[]; restoreRecord: ActivityRecord | null; seedText?: string; seedId?: number; seedResult?: TranslationResult; seedAutoSubmit?: boolean; onSeedConsumed?: () => void; onNeedSettings: () => void; onActivity: (record: ActivityRecordDraft, earnsCheckIn: boolean) => ActivityRecord; onUpdateRecord: (recordId: string, patch: Partial<ActivityRecord>) => void; onOpenRecord: (record: ActivityRecord) => void; onDeleteRecord: (recordId: string) => void; onRecordRestored: () => void }) {
   const { colors, styles } = useThemedStyles(createStyles);
   const [input, setInput] = useState('');
@@ -36,13 +29,13 @@ export function TranslateScreen({ settings, records, restoreRecord, seedText, se
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [historyOpen, setHistoryOpen] = useState(false);
-  const [exampleBatch, setExampleBatch] = useState(0);
   const [followUps, setFollowUps] = useState<TutorFollowUpTurn[]>([]);
   const [followUpsOpen, setFollowUpsOpen] = useState(true);
   const [followUpInput, setFollowUpInput] = useState('');
   const [followUpLoading, setFollowUpLoading] = useState(false);
   const [activeRecordId, setActiveRecordId] = useState<string | null>(null);
   const reveal = useRef(new Animated.Value(0)).current;
+  const recentRecords = records.slice(-5).reverse();
 
   useEffect(() => {
     if (!restoreRecord || restoreRecord.type !== 'translation') return;
@@ -213,20 +206,41 @@ export function TranslateScreen({ settings, records, restoreRecord, seedText, se
         </View>
 
         {!result && !loading ? (
-          <View style={styles.examples}>
-            <View style={styles.examplesHeader}>
-              <Text style={styles.exampleLabel}>试试这些句子</Text>
-              <Pressable accessibilityRole="button" onPress={() => setExampleBatch((current) => (current + 1) % exampleBatches.length)} style={styles.swapExamples}>
-                <RefreshCw size={14} color={colors.accent} />
-                <Text style={styles.swapExamplesLabel}>换一批</Text>
-              </Pressable>
+          <View style={styles.recent}>
+            <View style={styles.recentHeader}>
+              <Text style={styles.recentLabel}>最近查询</Text>
+              {records.length > 5 ? (
+                <Pressable accessibilityRole="button" onPress={() => setHistoryOpen(true)} hitSlop={8}>
+                  <Text style={styles.viewAllLabel}>查看全部</Text>
+                </Pressable>
+              ) : null}
             </View>
-            {exampleBatches[exampleBatch].map((example) => (
-              <Pressable key={example} onPress={() => setInput(example)} style={styles.exampleRow}>
-                <Text style={styles.exampleText}>{example}</Text>
-                <Send size={15} color={colors.muted} />
+            {recentRecords.length ? recentRecords.map((record) => (
+              <Pressable
+                key={record.id}
+                accessibilityRole="button"
+                accessibilityLabel={`打开查询记录：${record.sourceText}`}
+                onPress={() => onOpenRecord(record)}
+                style={({ pressed }) => [styles.recentRow, pressed && styles.recentRowPressed]}
+              >
+                <View style={styles.recentContent}>
+                  <View style={styles.recentMeta}>
+                    <Text style={styles.recentTime}>
+                      {new Date(record.timestamp).toLocaleDateString()} · {new Date(record.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </Text>
+                  </View>
+                  <Text style={styles.recentSource} numberOfLines={1}>{record.sourceText}</Text>
+                  {record.resultJapanese?.length ? <RubyText segments={record.resultJapanese} size={14} /> : null}
+                  {record.resultText ? <Text style={styles.recentResult} numberOfLines={1}>{record.resultText}</Text> : null}
+                </View>
+                <ChevronRight size={17} color={colors.muted} />
               </Pressable>
-            ))}
+            )) : (
+              <View style={styles.recentEmpty}>
+                <Clock3 size={20} color={colors.muted} />
+                <Text style={styles.recentEmptyText}>查询过的句子和单词会显示在这里</Text>
+              </View>
+            )}
           </View>
         ) : null}
 
@@ -343,13 +357,19 @@ const createStyles = (colors: AppColors) => StyleSheet.create({
   composerTop: { flexDirection: 'row', alignItems: 'center', gap: 7 },
   autoLabel: { color: colors.muted, fontSize: 12, fontWeight: '600', letterSpacing: 0 },
   input: { minHeight: 108, color: colors.ink, fontSize: 17, lineHeight: 25, padding: 0, letterSpacing: 0 },
-  examples: { gap: 0, borderTopWidth: 1, borderColor: colors.line },
-  examplesHeader: { height: 42, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  exampleLabel: { color: colors.muted, fontSize: 11, fontWeight: '700', letterSpacing: 0 },
-  swapExamples: { height: 36, flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 4 },
-  swapExamplesLabel: { color: colors.accent, fontSize: 11, fontWeight: '700', letterSpacing: 0 },
-  exampleRow: { minHeight: 48, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.line, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
-  exampleText: { flex: 1, color: colors.charcoal, fontSize: 14, lineHeight: 20, letterSpacing: 0 },
+  recent: { borderTopWidth: 1, borderTopColor: colors.line },
+  recentHeader: { height: 42, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  recentLabel: { color: colors.muted, fontSize: 11, fontWeight: '800', letterSpacing: 0 },
+  viewAllLabel: { color: colors.accent, fontSize: 11, fontWeight: '700', letterSpacing: 0 },
+  recentRow: { minHeight: 66, paddingVertical: 11, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.line, flexDirection: 'row', alignItems: 'center', gap: 10 },
+  recentRowPressed: { opacity: 0.55 },
+  recentContent: { flex: 1, gap: 4 },
+  recentMeta: { flexDirection: 'row', alignItems: 'center' },
+  recentTime: { color: colors.muted, fontSize: 9, fontWeight: '600', letterSpacing: 0 },
+  recentSource: { color: colors.ink, fontSize: 14, lineHeight: 20, fontWeight: '700', letterSpacing: 0 },
+  recentResult: { color: colors.muted, fontSize: 12, lineHeight: 18, letterSpacing: 0 },
+  recentEmpty: { minHeight: 92, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.line, alignItems: 'center', justifyContent: 'center', gap: 7 },
+  recentEmptyText: { color: colors.muted, fontSize: 11, letterSpacing: 0 },
   result: { gap: 28 },
   translationBlock: { paddingVertical: 20, borderTopWidth: 2, borderBottomWidth: 1, borderColor: colors.ink, gap: 13 },
   resultLabel: { color: colors.muted, fontSize: 10, fontWeight: '800', letterSpacing: 0 },

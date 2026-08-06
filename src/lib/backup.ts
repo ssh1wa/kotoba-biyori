@@ -39,7 +39,7 @@ export async function exportBackup() {
   const payload: BackupPayload = {
     format: BACKUP_FORMAT,
     schemaVersion: 1,
-    appVersion: '1.7.0-beta.1',
+    appVersion: '1.7.0-beta.2',
     exportedAt: new Date().toISOString(),
     activity,
     roleplay,
